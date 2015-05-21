@@ -118,6 +118,8 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
   static char sunset_buffer[6];
   static char weather_layer_buffer[32];
   int rawtime;
+  int rawsunrise = 0;
+  int rawsunset = 0;
   int utcOffset = 0;
 
   // Read first item
@@ -140,32 +142,11 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
       #endif
       break;
     case KEY_SUNRISE:
-      rawtime = t->value->int32 - utcOffset;
-      time_t sunrisetime = (time_t)rawtime;
-      struct tm *sunrise = localtime(&sunrisetime);
-      // Write the current hours and minutes into the buffer
-      if(clock_is_24h_style() == true) {
-        // Use 24 hour format
-        strftime(sunrise_buffer, sizeof(sunrise_buffer), "%H:%M", sunrise);
-      } else {
-        // Use 12 hour format
-        strftime(sunrise_buffer, sizeof(sunrise_buffer), "%I:%M", sunrise);
-      }
+      rawsunrise = t->value->int32;
       break;
     case KEY_SUNSET:
-      rawtime = t->value->int32 -utcOffset;
-      time_t sunsettime = (time_t)rawtime;
-      struct tm *sunset = localtime(&sunsettime);
-      // Write the current hours and minutes into the buffer
-      if(clock_is_24h_style() == true) {
-        // Use 24 hour format
-        strftime(sunset_buffer, sizeof(sunset_buffer), "%H:%M", sunset);
-      } else {
-        // Use 12 hour format
-        strftime(sunset_buffer, sizeof(sunset_buffer), "%I:%M", sunset);
-      }
+      rawsunset = t->value->int32;
       break;
-
     default:
       APP_LOG(APP_LOG_LEVEL_ERROR, "Key %d not recognized!", (int)t->key);
       break;
@@ -174,6 +155,28 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     // Look for next item
     t = dict_read_next(iterator);
   }
+
+  // Correct timezone
+  rawsunrise = rawsunrise - utcOffset;
+  time_t sunrisetime = (time_t)rawsunrise;
+  
+  rawsunset = rawsunset - utcOffset;
+  time_t sunsettime = (time_t)rawsunset;
+
+  // Write the current hours and minutes into the buffer
+  if(clock_is_24h_style() == true) {
+    // Use 24 hour format
+    strftime(sunrise_buffer, sizeof(sunrise_buffer), "%H:%M", localtime(&sunrisetime));
+    strftime(sunset_buffer, sizeof(sunset_buffer), "%H:%M", localtime(&sunsettime));
+  } else {
+    // Use 12 hour format
+    strftime(sunrise_buffer, sizeof(sunrise_buffer), "%I:%M", localtime(&sunrisetime));
+    strftime(sunset_buffer, sizeof(sunset_buffer), "%I:%M", localtime(&sunsettime));
+  }
+
+
+  
+  
   // Assemble full string and display
 //  snprintf(weather_layer_buffer, sizeof(weather_layer_buffer), "%s, %s", temperature_buffer, conditions_buffer);
   snprintf(weather_layer_buffer, sizeof(weather_layer_buffer), "%s, %s", sunrise_buffer, sunset_buffer);
