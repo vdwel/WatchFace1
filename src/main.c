@@ -134,7 +134,7 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     case KEY_SUNRISE:
       rawtime = t->value->int32;
       time_t sunrisetime = (time_t)rawtime;
-      struct tm *sunrise = gmtime(&sunrisetime);
+      struct tm *sunrise = localtime(&sunrisetime);
       // Write the current hours and minutes into the buffer
       if(clock_is_24h_style() == true) {
         // Use 24 hour format
@@ -147,7 +147,7 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     case KEY_SUNSET:
       rawtime = t->value->int32;
       time_t sunsettime = (time_t)rawtime;
-      struct tm *sunset = gmtime(&sunsettime);
+      struct tm *sunset = localtime(&sunsettime);
       // Write the current hours and minutes into the buffer
       if(clock_is_24h_style() == true) {
         // Use 24 hour format
