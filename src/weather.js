@@ -38,11 +38,15 @@ function locationSuccess(pos) {
 
       var sunset = json.sys.sunset;
       console.log('Sunset is ' + sunset);
+      
+      var utcOffset = new Date().getTimezoneOffset() * 60;
+      console.log('UTC offset is ' + utcOffset);
     
       // Assemble dictionary using our keys
       var dictionary = {
         'KEY_TEMPERATURE': temperature,
         'KEY_CONDITIONS': conditions,
+        'KEY_UTCOFFSET': utcOffset,
         'KEY_SUNRISE': sunrise,
         'KEY_SUNSET': sunset
       };

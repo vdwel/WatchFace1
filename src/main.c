@@ -1,8 +1,9 @@
 #include <pebble.h>
 #define KEY_TEMPERATURE 0
 #define KEY_CONDITIONS 1
-#define KEY_SUNRISE 2
-#define KEY_SUNSET 3
+#define KEY_UTCOFFSET 2
+#define KEY_SUNRISE 3
+#define KEY_SUNSET 4
 
 Window *my_window;
 TextLayer *s_time_layer;
@@ -117,6 +118,7 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
   static char sunset_buffer[6];
   static char weather_layer_buffer[32];
   int rawtime;
+  int utcOffset = 0;
 
   // Read first item
   Tuple *t = dict_read_first(iterator);
@@ -131,8 +133,14 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     case KEY_CONDITIONS:
       snprintf(conditions_buffer, sizeof(conditions_buffer), "%s", t->value->cstring);
       break;
+    case KEY_UTCOFFSET:
+      #ifdef PBL_COLOR
+      #else 
+        utcOffset = (int)t->value->int32;
+      #endif
+      break;
     case KEY_SUNRISE:
-      rawtime = t->value->int32;
+      rawtime = t->value->int32 + utcOffset;
       time_t sunrisetime = (time_t)rawtime;
       struct tm *sunrise = localtime(&sunrisetime);
       // Write the current hours and minutes into the buffer
