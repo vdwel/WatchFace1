@@ -79,8 +79,8 @@ static void main_window_load(Window *window) {
     window_set_background_color(window, GColorWhite);
   #endif
   
-  text_layer_set_text(s_time_layer, "00:00");
-  text_layer_set_text(s_url_layer, "loading...");
+//  text_layer_set_text(s_time_layer, "00:00");
+//  text_layer_set_text(s_url_layer, "loading...");
 
 
   // Improve the layout to be more like a watchface
