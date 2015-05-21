@@ -10,13 +10,13 @@
         "location"
     ],
     "companyName": "sander@van-der-wel.net",
-    "longName": "WatchFace1",
+    "longName": "Photographers",
     "projectType": "native",
     "resources": {
         "media": []
     },
     "sdkVersion": "3",
-    "shortName": "WatchFace1",
+    "shortName": "Photographers",
     "targetPlatforms": [
         "aplite",
         "basalt"
