@@ -140,7 +140,7 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
       #endif
       break;
     case KEY_SUNRISE:
-      rawtime = t->value->int32 + utcOffset;
+      rawtime = t->value->int32 - utcOffset;
       time_t sunrisetime = (time_t)rawtime;
       struct tm *sunrise = localtime(&sunrisetime);
       // Write the current hours and minutes into the buffer
