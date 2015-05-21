@@ -68,6 +68,7 @@ static void main_window_load(Window *window) {
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_time_layer));
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_date_layer));
 
+  update_time();
 }
 
 static void main_window_unload(Window *window) {
