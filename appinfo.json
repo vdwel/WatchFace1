@@ -1,0 +1,23 @@
+{
+    "appKeys": {},
+    "capabilities": [
+        ""
+    ],
+    "companyName": "sander@van-der-wel.net",
+    "longName": "WatchFace1",
+    "projectType": "native",
+    "resources": {
+        "media": []
+    },
+    "sdkVersion": "3",
+    "shortName": "WatchFace1",
+    "targetPlatforms": [
+        "aplite",
+        "basalt"
+    ],
+    "uuid": "4c711c4e-d96c-4495-93ad-df890644c3c2",
+    "versionLabel": "1.0",
+    "watchapp": {
+        "watchface": true
+    }
+}
