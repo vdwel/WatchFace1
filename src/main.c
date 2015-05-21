@@ -1,7 +1,9 @@
 #include <pebble.h>
 #define KEY_TEMPERATURE 0
 #define KEY_CONDITIONS 1
-  
+#define KEY_SUNRISE 2
+#define KEY_SUNSET 3
+
 Window *my_window;
 TextLayer *s_time_layer;
 TextLayer *s_date_layer;
@@ -111,7 +113,10 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
   // Store incoming information
   static char temperature_buffer[8];
   static char conditions_buffer[32];
+  static char sunrise_buffer[6];
+  static char sunset_buffer[6];
   static char weather_layer_buffer[32];
+  int rawtime;
 
   // Read first item
   Tuple *t = dict_read_first(iterator);
@@ -126,6 +131,33 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     case KEY_CONDITIONS:
       snprintf(conditions_buffer, sizeof(conditions_buffer), "%s", t->value->cstring);
       break;
+    case KEY_SUNRISE:
+      rawtime = t->value->int32;
+      time_t sunrisetime = (time_t)rawtime;
+      struct tm *sunrise = gmtime(&sunrisetime);
+      // Write the current hours and minutes into the buffer
+      if(clock_is_24h_style() == true) {
+        // Use 24 hour format
+        strftime(sunrise_buffer, sizeof(sunrise_buffer), "%H:%M", sunrise);
+      } else {
+        // Use 12 hour format
+        strftime(sunrise_buffer, sizeof(sunrise_buffer), "%I:%M", sunrise);
+      }
+      break;
+    case KEY_SUNSET:
+      rawtime = t->value->int32;
+      time_t sunsettime = (time_t)rawtime;
+      struct tm *sunset = gmtime(&sunsettime);
+      // Write the current hours and minutes into the buffer
+      if(clock_is_24h_style() == true) {
+        // Use 24 hour format
+        strftime(sunset_buffer, sizeof(sunset_buffer), "%H:%M", sunset);
+      } else {
+        // Use 12 hour format
+        strftime(sunset_buffer, sizeof(sunset_buffer), "%I:%M", sunset);
+      }
+      break;
+
     default:
       APP_LOG(APP_LOG_LEVEL_ERROR, "Key %d not recognized!", (int)t->key);
       break;
@@ -135,7 +167,8 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     t = dict_read_next(iterator);
   }
   // Assemble full string and display
-  snprintf(weather_layer_buffer, sizeof(weather_layer_buffer), "%s, %s", temperature_buffer, conditions_buffer);
+//  snprintf(weather_layer_buffer, sizeof(weather_layer_buffer), "%s, %s", temperature_buffer, conditions_buffer);
+  snprintf(weather_layer_buffer, sizeof(weather_layer_buffer), "%s, %s", sunrise_buffer, sunset_buffer);
   text_layer_set_text(s_url_layer, weather_layer_buffer);
 
 }
